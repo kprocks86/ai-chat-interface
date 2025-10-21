@@ -3,6 +3,7 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import type { PromptInputMessage } from "@/components/ai-elements/prompt-input";
+import { Response } from "@/components/ai-elements/response";
 import { Input } from "./input";
 
 export default function Chat() {
@@ -13,7 +14,10 @@ export default function Chat() {
   });
 
   const handleSubmit = (message: PromptInputMessage) => {
-    sendMessage({ role: "user", parts: [{ type: "text", text: message.text || "" }] });
+    sendMessage({
+      role: "user",
+      parts: [{ type: "text", text: message.text || "" }],
+    });
   };
 
   return (
@@ -21,7 +25,14 @@ export default function Chat() {
       <div className="flex-1">
         {messages.map((message) => (
           <Message from={message.role} key={message.id}>
-            <MessageContent>{message.parts.map((part) => part.type === "text" ? part.text : "").join("")}</MessageContent>
+            <MessageContent>
+              <Response>
+                {message.parts
+                  .filter((part) => part.type === "text")
+                  .map((part) => part.text)
+                  .join("")}
+              </Response>
+            </MessageContent>
           </Message>
         ))}
       </div>
